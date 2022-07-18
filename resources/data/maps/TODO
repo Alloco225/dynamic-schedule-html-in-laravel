@@ -1,0 +1,58 @@
+Ici - TODO
+
+[x] - Splash screen
+[] - Onboarding
+    [x] - Onboarding slides
+        [] - Polish
+    [] - Terms and Conditions
+    [x] - License Agreement
+        [x] - Exit on refuse
+        [x] - Auth on accept
+    [] - Introduction overlay
+[] - Authentification
+    [] - Connexion
+        [] - Phone
+        [] - Google
+    [] - Inscription
+        [] - Phone
+            [x] - Vérification phone
+        [] - Google
+[] - Compte utilisateur
+    [] - Photo profil
+    [] - Supprimer compte
+
+[] - Réglage
+    [] =2 Langue
+
+[] - Partager Position
+    [] - Push Notifications
+    [] - Notifications
+        [] - Notification de partage
+        [] - Notification de réception
+        [] - Overture de position via notification de réception
+[] - Enregistrer position
+    [] - Code position
+        [] - éphémère/permanent
+        [] - privé/public
+[] - Carte
+    [] - Apparence - Mapbox skin
+    [] - Lieux
+        [] - Lieux nominatim
+        [] - Lieux ici
+            [] - Marqueurs Génériques
+            [] - Marqueurs par catégorie
+
+[] - Recherche
+    [] - Empty search
+    [] - Historique de recherche
+    [] - Recherche lieux
+    [] - Recherche code
+    [] - From source
+        [] - Ici
+        [] - Nominatim
+        [] - Google place
+
+[] - Internationalisation
+
+[] - Meta data management
+    [] - Device Info

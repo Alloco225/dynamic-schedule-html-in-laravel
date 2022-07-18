@@ -1,0 +1,167 @@
+:root{
+    --red: #eb4d4d;
+    --blue: #4383e2;
+    --yellow: #ebd34d;
+}
+*{
+    box-sizing: border-box;
+}
+
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+}
+
+
+img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 200px;
+}
+
+.hero{
+    position: relative;
+    background-color: #282828;
+    height: 60vh;
+}
+
+.tile{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    min-height: 50%;
+    width: 80%;
+}
+.tile-blue{
+    background: var(--blue);
+    transform: translate(-50%, -50%) skewX(-6deg) rotate(-1deg);
+}
+.tile-yellow{
+    background: var(--yellow);
+    width: 75%;
+    height: 260px;
+    transform: translate(-55%, -70%) skewX(-16deg) rotate(-2deg);
+}
+.tile-red{
+    background: var(--red);
+    width: 80%;
+    height: 260px;
+    transform: translate(-53%, -70%) skewX(24deg) rotate(2deg);
+}
+
+.emoji{
+    position: absolute;
+}
+
+.emoji *{
+    position: absolute;
+    height: auto;
+    width: 200px;
+}
+
+.emoji-sun{
+    /* background-color: aqua; */
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 250px;
+    height: 200px;
+}
+
+.emoji-sun *{
+    position: absolute;
+    height: auto;
+    width: 200px;
+}
+
+.emoji-sun .b-clouds{
+    top: 5%;
+    left: 40%;
+    width: 180px;
+
+}
+.emoji-sun .sun{
+    transform: rotate(-16deg);
+}
+.emoji-sun .f-cloud{
+    left: 0%;
+    top: 70%;
+    width: 180px;
+    /* top: 50%; */
+}
+
+
+.emoji-rocket {
+    position: absolute;
+    right: -10%;
+    width: 300px;
+    height: 100%;
+}
+
+/* Back clouds   */
+
+/* Rocket body */
+
+    .emoji-rocket .rocket_body{
+        /* background-color: red; */
+        position: absolute;
+        top: 20%;
+        width: 160px;
+        height: 250px;
+    }
+
+    .emoji-rocket .rocket_body .sm{
+        position: absolute;
+        left: 75%;
+        top: 60%;
+        transform: translateX(-75%) rotate(-45deg);
+        width: 80px;
+    }
+    .emoji-rocket .rocket_body .rocket{
+        transform: rotate(-45deg);
+    }
+
+    .emoji-rocket .rocket_body .flamme{
+        left: 70%;
+        top: 60%;
+        width: 60px;
+        /* top: 50%; */
+        transform: translateX(-70%) rotate(-45deg);
+    }
+    .emoji-rocket .rocket_body .m-flamme{
+        left: 75%;
+        top: 65%;
+        width: 80px;
+        transform: translateX(-75%) rotate(-45deg);
+    }
+    .emoji-rocket .rocket_body .b-flamme{
+        left: 85%;
+        top: 68%;
+        width: 110px;
+        transform: translateX(-85%) rotate(-45deg);
+    }
+    .emoji-rocket .rocket_body .bm-flamme{
+        left: 100%;
+        top: 80%;
+        width: 130px;
+        transform: translateX(-100%) rotate(-45deg);
+    }
+    .emoji-rocket .rocket_body .r-flamme{
+        left: 80%;
+        top: 85%;
+        width: 90px;
+        transform: translateX(-80%) rotate(-80deg);
+        transform-origin: top;
+    }
+    .emoji-rocket .rocket_body .l-flamme{
+        left: 20%;
+        top: 70%;
+        width: 90px;
+        transform: translateX(-20%) rotate(0deg);
+        transform-origin: top;
+    }
+/* Clouds */

@@ -1,0 +1,21 @@
+version: "3"
+services:
+  ici_fastify:
+    build:
+      context: '.'
+      dockerfile: dockerfile
+    working_dir: /code
+    environment:
+      - NODE_ENV=production
+      - ARANGO_AUTH=root
+      #### - ARANGO_HOST=http://192.34.60.238:8529
+      - ARANGO_HOST=http://194.163.146.6:8529
+      - ARANGO_PASSWORD=adminpass
+      - ARANGO_DB=ici
+    volumes:
+      # - ./src:/code
+      - ./back_end:/code
+    ports:
+        - '8008:8008'
+        # - '8008:3000'
+    command: "npm run start"

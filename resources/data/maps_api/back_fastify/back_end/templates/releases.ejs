@@ -1,0 +1,1493 @@
+<!-- Amane Hosanna -->
+<!-- @ JooL International -->
+<!-- 27/10/2021 -->
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ici - Releases</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+
+</head>
+
+<body>
+
+    <main class="pt-5 sm:pt-10 md:pt-5 w-full sm:w-11/12 md:w-10/12 lg:w-9/12 xl:w-8/12 my-5 sm:my-10 mx-auto">
+        <!-- Notification -->
+        <% if(message){ %>
+        <div id="pageNotification"
+            class="hidden transition-all duration-300 ease-in-out mt-10 
+            text-white flex items-center justify-between px-2 sm:px-6 py-1 sm:py-4 border-0 sm:rounded relative mb-4 <%= message.success ? 'bg-green-500' : 'bg-pink-500' %>">
+            <div class="flex items-center">
+
+                <span
+                    class="text-xl rounded-full p-3 bg-white <%= message.success ? 'text-green-500' : 'text-pink-500' %> inline-block mr-5 align-middle">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <% if(message.success){ %>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+
+                        </path>
+                        <% } %>
+                        <% if(!message.success){ %>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        <% } %>
+                    </svg>
+                </span>
+                <div>
+                    <h3><b class="text-xl capitalize"><%= message.title %></b> </h3>
+                    <span class="inline-block align-middle mr-8">
+                        <%= message.content %>
+                    </span>
+                </div>
+            </div>
+            <a id="btn_close_notification"
+                class="cursor-pointer bg-transparent text-2xl font-semibold leading-none mr-6 outline-none focus:outline-none">
+                <span>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </span>
+            </a>
+        </div>
+        <% } %>
+        <!-- /Notification -->
+        <!-- Main content -->
+        <section id="releasesPage" class=" border sm:rounded flex flex-col transition-all duration-200 ease-in-out">
+            <h2 class="flex flex-col md:flex-row justify-between text-2xl text-gray-900 border-b  p-3">
+                <span>
+                    Releases de production
+                </span>
+                <span class="ml-auto md:ml-0 text-lg md:text-2xl">ICI -
+                    <span class="text-lg text-gray-800">
+                        Amané Hosanna
+                    </span>
+                </span>
+            </h2>
+            <div id="pagePreLoader" class="mt-5 p-3 text-center transition-all duration-200 ease-in-out">
+                <div class="flex flex-col text-gray-600 justify-between items-center rounded p-0 md:px-3 md:py-5">
+                    <div class="animate-pulse p-2 md:p-10 flex flex-col hover:bg-gray-100 items-center justify-center">
+                        <span class="text-gray-600 p-5 text-6xl bg-gray-300 rounded-full mb-2 animate-pulse">
+                            あ
+                        </span>
+                        <div class="text-2xl">
+                            Chargement en cours...
+                        </div>
+                        <div id="loadingMessage" class="text-md">
+                            Veuillez patienter
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="pageData" class="hidden transition-all duration-200 ease-in-out">
+
+                <!-- Auth -->
+                <% if(auth){ %>
+                <div class="mb-10 flex justify-between items-center sm:justify-end  p-3">
+                    <span class="hidden sm:block mr-3">
+                        Connecté en tant que
+                    </span>
+                    <strong class="transition-all duration-200 ease-in-out md:ml-2 text-sm flex justify-start
+                        md:justify-between text-center cursor-pointer items-center rounded text-purple-500
+                        hover:bg-purple-300 hover:bg-purple-500 hover:text-white">
+                        <svg class="w-4 h-4 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                            </path>
+                        </svg>
+                        <span class="mx-0.5 text-sm">
+                            <%= auth %>
+                        </span>
+                        <svg class="w-4 h-4 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                            </path>
+                        </svg>
+                    </strong>
+                    </span>
+                    <div
+                        class="_btn_logout transition-all duration-200 ease-in-out flex text-center items-center text-white md:text-red-400 ml-3 shadow md:border border-red-500 hover:border-none md:shadow-none bg-red-400 md:bg-white rounded hover:text-white hover:shadow hover:bg-red-500 cursor-pointer px-1.5 py-0.5">
+                        <span class="hidden sm:block">Se déconnecter</span>
+                        <span class="sm:hidden">Déconnexion</span>
+                        <span class="hidden sm:block ml-2 sm:ml-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z">
+                                </path>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <% } %>
+                <!-- /Auth -->
+                <!-- Empty -->
+                <% if (releases.length == 0) { %>
+                <div class="flex flex-col text-gray-600 justify-between items-center rounded  p-3 md:px-3 md:py-5">
+                    <div class="rounded-full p-5 md:p-10 flex flex-col hover:bg-gray-100 items-center justify-center">
+                        <span class="text-gray-300 mb-2">
+                            <svg class="w-20 h-20" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path>
+                            </svg>
+                        </span>
+                        <div id="emptyText" class="text-2xl capitalize text-center">
+                            Aucune Release
+                        </div>
+                        <div id="emptyMessage" class="text-md text-center">
+                            Repassez plus tard
+                        </div>
+                    </div>
+
+                </div>
+                <% } %>
+                <!-- Auth -->
+                <% if (releases.length > 0) { %>
+                <% if (!auth) { %>
+                <div class="mb-5 md:mb-10 flex flex-col  p-3">
+                    <% if (options.testers) { %>
+                    <% if (options.testers.length > 0) { %>
+                    <span class="mr-3 text-lg font-semibold">Connexion</span>
+                    <label for="tester" class="flex flex-col w-full">
+                        <select id="tester" name="tester" required class="rounded p-3 border w-full ">
+                            <% if (auth) { %>
+                            <option selected value="<%= auth %>"><%= auth %></option>
+                            <% }else { %>
+                            <option value="">--Votre nom--</option>
+
+                            <% options.testers.forEach(function(tester){ %>
+                            <option value="<%= tester %>"><%= tester %></option>
+                            <% }) %>
+                            <% } %>
+                        </select>
+
+                        <% if (!auth) { %>
+                        <div class="w-full">
+                            <div class="password-hint hidden text-xs mt-2 text-blue-500">
+                                <span>
+                                    Mot de passe:
+                                </span>
+                                <span>
+                                    prenomJourMoisDeNaissance ex:
+                                </span>
+                                <span class="font-semibold">
+                                    keytchup1402
+                                </span>
+                            </div>
+                            <input name="password" type="password" placeholder="Mot de passe"
+                                class="hidden mt-0.5 rounded py-2 px-3 border w-full">
+                        </div>
+                        <% } %>
+                        <span id="testerError" class="transition-all duration-200 ease-in-out text-red-500"></span>
+                    </label>
+                    <% } %>
+                    <% } %>
+                </div>
+                <% } %>
+                <% } %>
+                <!-- /Auth -->
+                <!-- /Empty -->
+                <!-- Releases -->
+                <% if (releases.length > 0) { %>
+                <% releases.forEach(function(release){ %>
+                <% if (auth) { %>
+
+                <div x-data="{ openFeatures: true, openComments: true }"
+                    class="release-block border-gray-200  sm:p-3">
+                    <!-- Release -->
+                    <div
+                        class="flex flex-col gap-3 md:gap-0 md:flex-row flex-wrap md:flex-nowrap justify-between md:items-center rounded hover:bg-gray-100 cursor-pointer p-2 md:px-3">
+                        <div class="flex flex-wrap md:flex-nowrap items-center justify-between">
+                            <div class="flex items-center">
+                                <% if(releases[0] == release){ %>
+                                <span class="mr-2 md:mr-5  text-red-500">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                                <% }else{ %>
+                                <span class="mr-2 md:mr-5 w-6 h-6"></span>
+                                <% } %>
+                                <span class="text-xl md:text-2xl text-gray-800">
+                                    <%= release.name %>
+                                </span>
+                            </div>
+
+                            <div class="flex items-center justify-end md:hidden">
+                                <span class="text-xs moment_js"><%= release.created_at %></span>
+                                <% if (release.features) { %>
+                                <span class="hover:bg-gray-200 ml-1 rounded ">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <% }else{ %>
+                                <span class=" w-6 h-6 ml-3 "></span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col md:flex-row  justify-between md:justify-start items-stretch md:items-center text-gray-400">
+                            <div class="flex w-full md:w-auto flex-wrap sm:flex-nowrap justify-between items-center">
+                                <span
+                                    class="<%= releases[0] == release ? 'text-green-500 md:bg-green-100': 'text-gray-500 md:bg-gray-100' %> rounded-md p-0 md:p-2 md:mr-5">
+                                    Version <%= release.version %>
+                                </span>
+                                <span class="hidden md:block mr-3 text-sm moment_js"><%= release.created_at %></span>
+
+                                <span title="Dernier téléchargement <%= release.last_downloaded_at %>"
+                                    class="md:mr-3 text-sm md:text-md flex items-center">
+                                    <span class="md:hidden">Téléchargements </span>
+                                    <span class="hidden sm:block ml-3 sm:ml-1">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
+                                            </path>
+                                        </svg>
+                                    </span>
+                                    <span class="font-semibold ml-3 sm:ml-1"><%= release.download_count %>
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-end text-sm">
+                                <span class="md:hidden">Taille </span>
+                                <span class="hidden sm:block">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <span class="ml-3 sm:ml-1 font-semibold"><%= release.size %></span>
+                            </div>
+                            <div class="flex items-center justify-end text-sm sm:ml-3">
+                                <span class="md:hidden">Commentaires </span>
+                                <span class="hidden sm:block">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <span class="ml-3 sm:ml-1 font-semibold"><%= release.comments.length %></span>
+                            </div>
+
+                            <a href="/releases/download/<%= release.slug %>" class="md:ml-3 mt-4 md:mt-0 cursor-pointer rounded md:rounded-full w-full md:w-auto flex justify-center
+                                items-center p-2 md:p-3 shadow text-white 
+                                <%= releases[0] == release ? 'bg-green-400 hover:bg-green-700' : 'bg-gray-400 hover:bg-gray-700' %> " title="Télécharger <%= release.slug %>">
+                                <span class="md:hidden mr-2">Télécharger</span>
+                                <svg class="w-5 h-5 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                           
+                            <div @click="openFeatures = !openFeatures; openComments = !openComments "
+                                class="md:hidden mt-3 md:mt-0 w-full mx-auto text-center md:w-auto md:mr-3 text-gray-800 text-sm cursor-pointer rounded px-3 py-2 bg-gray-200 hover:bg-gray-200">
+                                Voir
+                                <span x-show="!openFeatures">plus </span>
+                                <span x-show="openFeatures">moins </span>
+                            </div>
+                            <a
+                                class="md:hidden text-center btn_write_review mt-3 md:mt-0 w-full md:w-auto md:mr-3 text-green-800 border
+                                border-green-200 bg-green-50 md:bg-white cursor-pointer rounded px-3 py-2 hover:bg-green-200">
+                                Faire un retour sur l'application
+                            </a>
+                            <div @click="openFeatures = !openFeatures; openComments = !openComments "
+                                class="hidden md:flex">
+
+                                <% if (release.features.length > 0) { %>
+                                <span class="hover:bg-gray-200 ml-3 rounded ">
+                                    <svg x-show="!openFeatures" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <svg x-show="openFeatures" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                                <% }else{ %>
+                                <span class=" w-6 h-6 ml-3 "></span>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Release -->
+                    <!-- Features block -->
+                    <% if (release.features) { %>
+                    <% if (release.features.length > 0) { %>
+                    <div x-show="openFeatures" class="p-2 md:p-5 flex flex-col rounded bg-gray-50 mt-2 mt-3  ">
+                        <div class="mb-2 text-gray-700">
+                            <h3 class="text-md flex items-center justify-between mb-3">
+                                <div class="flex items-center">
+                                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
+                                        </path>
+                                    </svg>
+                                    <span class="mr-3"><%= release.features.length %></span>
+                                    Fonctionalité<span><%= release.features.length > 1 ? 's' : '' %></span>
+                                </div>
+
+                                <span @click="openFeatures = false"
+                                    class="text-red-500 cursor-pointer p-1 rounded hover:bg-red-100">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                            </h3>
+                            <!-- Features -->
+                            <ul
+                                class=" block mt-3 text-gray-500 text-sm gap-3 md:gap-5 rounded sm:grid grid-cols-2 md:grid-cols-3 items-start">
+                                <% release.features.forEach(function(feature, index){ %>
+                                <% if (feature.name || feature.description) { %>
+                                <li class="mt-3 md:mt-2 shadow md:shadow-none bg-white rounded">
+                                    <div
+                                        class="<%= feature.features ? feature.features.length > 0  ? 'border-b p-3': 'p-3' : 'p-3' %>">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="flex items-center font-semibold">
+                                                <span class="flex items-center justify-center p-1 rounded-full
+                                                    mr-2 <% if (feature.status == 'done') { %> bg-green-200
+                                                    text-green-500 <% } if (feature.status == 'ongoing') { %>
+                                                    bg-gray-200 text-gray-500
+                                                    <% } if (feature.status == 'cancelled') { %> bg-red-200
+                                                    text-red-500 <% } %>">
+                                                    <% if (feature.status == 'done') { %>
+                                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <% } %>
+                                                    <% if (feature.status == 'ongoing') { %>
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z">
+                                                        </path>
+                                                    </svg>
+                                                    <% } %>
+                                                    <% if (feature.status == 'cancelled') { %>
+                                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd"
+                                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                            clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <% } %>
+                                                </span>
+                                                <%= feature.name %>
+                                            </h4>
+                                            <% if (feature.features) { %>
+                                            <span>
+                                                <%= feature.features.length > 0 ? feature.features.length : '' %></span>
+                                            <% } %>
+                                        </div>
+                                        <p class="mt-1 text-sm">
+                                            <%= feature.description %>
+                                        </p>
+                                    </div>
+                                    <!-- Sub features -->
+                                    <% if (feature.features) { %>
+                                    <ul class="<%= feature.features.length > 0 ? 'mt-2  p-3' : '' %>">
+                                        <% feature.features.forEach(function(subfeature, index){ %>
+                                        <% if (subfeature.name || subfeature.description) { %>
+                                        <li class="flex items-start rounded md:bg-gray-100 px-1 md:p-1.5 mt-1 md:mt-2">
+                                            <span class="inline-block rounded p-0.5 text-xs mr-3
+                                                <% if (subfeature.status == 'done') { %> bg-green-200
+                                                text-green-500 <% } if (subfeature.status == 'ongoing') { %>
+                                                bg-gray-200 text-gray-500
+                                                <% } if (subfeature.status == 'cancelled') { %> bg-red-200
+                                                text-red-500 <% } %>">
+                                                <% if (subfeature.status == 'done') { %>
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <% } %>
+                                                <% if (subfeature.status == 'ongoing') { %>
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z">
+                                                    </path>
+                                                </svg>
+                                                <% } %>
+                                                <% if (subfeature.status == 'cancelled') { %>
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <% } %>
+                                            </span>
+
+                                            <div class="flex flex-col justify-center">
+                                                <h6 class="text-sm font-normal"><%= subfeature.name %></h6>
+                                                <p class="text-xs"><%= subfeature.description %></p>
+                                            </div>
+                                        </li>
+
+                                        <% } %>
+                                        <% }) %>
+                                    </ul>
+                                    <% } %>
+                                </li>
+                                <% } %>
+                                <% }) %>
+                            </ul>
+                        </div>
+                        <div
+                            class="flex pt-5 md:pt-0 text-center flex-col-reverse md:flex-row items-center justify-end">
+                            <a @click="openComments = !openComments"
+                                class="mt-3 md:mt-0 w-full md:w-auto md:mr-3 text-gray-800 text-sm cursor-pointer rounded px-3 py-2 hover:bg-gray-200">
+                                <span x-show="!openComments">Afficher </span>
+                                <span x-show="openComments">Cacher </span>
+                                les commentaires
+                            </a>
+                            <a class="btn_write_review text-center sm:hidden mt-3 md:mt-0 w-full md:w-auto md:mr-3 text-green-800 border
+                                border-green-200 bg-green-50 md:bg-white cursor-pointer rounded px-3 py-2
+                                hover:bg-green-200">
+                                Donner mon avis
+                            </a>
+
+                            <a href="/releases/download/<%= release.slug %>"
+                                class="flex w-full md:w-auto justify-center shadow items-center md:inline rounded px-3 py-2 <%= releases[0] == release ? 'bg-green-400 hover:bg-green-700' : 'bg-gray-400 hover:bg-gray-700' %>
+                                text-white">
+                                <span class="mr-3 md:mr-0">
+                                    Télécharger l'apk
+                                </span>
+                                <svg class="md:hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    <% } %>
+                    <% } %>
+                    <!-- /Features -->
+                    <!-- Comments -->
+                    <section x-show="openComments" class="flex flex-col rounded bg-gray-50 mt-3">
+                        <div id="section-comments-<%= release.sug %>" class="mb-2 text-gray-700">
+                            <h3 class="text-md flex items-center border-b p-2 md:p-5 justify-between mb-3">
+                                <div class="text-md flex items-center ">
+                                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                                        </path>
+                                    </svg>
+                                    <% if (release.comments) { %>
+                                    <span id="comments-count-<%=release.slug %>"
+                                        class="mr-3"><%= release.comments.length ?? '0' %></span>Commentaire<span><%= release.comments.length > 1 ? 's' : '' %></span>
+                                    <% }else{ %>
+                                    <span class="mr-3">Aucun Commentaire</span>
+                                    <% } %>
+
+                                </div>
+                                <span @click="openComments = false"
+                                    class="text-red-500 cursor-pointer p-1 rounded hover:bg-red-100">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                            </h3>
+                            <% if (release.comments) { %>
+                            <% if (release.comments.length > 0) { %>
+                            <ul class="pb-3 p-2 md:p-5 md:pl-5 block mb-3 text-gray-500 text-sm border-b ">
+                                <% release.comments.forEach(function(comment){ %>
+                                <li
+                                    class="mb-2 md:mb-1 flex items-start p-1.5 rounded bg-white md:bg-none cursor-pointer <%= auth ? (auth === comment.tester ? 'bg-purple-50 hover:bg-purple-100': 'hover:bg-white') : 'hover:bg-white' %> ">
+
+                                    <span
+                                        class="inline-block rounded p-0.5 text-xs mr-2
+                                        <%= comment.review == 'good' ? 'bg-green-200 text-green-500' : comment.review == 'other' ? 'bg-blue-200 text-blue-500': comment.review == 'suggestion' ? 'bg-yellow-200 text-yellow-500' :  comment.review == 'warning' ? 'bg-pink-200 text-pink-500' :  comment.review == 'crash' ? 'bg-black text-white' :  comment.review == 'error' ? 'bg-red-200 text-red-500' :  comment.review == 'slow' ? 'bg-purple-200 text-purple-500' : 'bg-gray-200 text-gray-500' %>">
+
+                                        <% if(comment.review == 'good'){ %>
+
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                            </path>
+                                        </svg>
+                                        <% }else if(comment.review == 'suggestion'){ %>
+
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                                            </path>
+                                        </svg>
+
+                                        <% }else if(comment.review == 'other'){ %>
+
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">
+                                            </path>
+                                        </svg>
+                                        <% }else if(comment.review == 'slow'){ %>
+
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <% }else if(comment.review == 'warning'){ %>
+
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                            </path>
+                                        </svg>
+                                        <% }else if(comment.review == 'error'){ %>
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+
+                                        <% }else if(comment.review == 'crash'){ %>
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                            </path>
+                                        </svg>
+
+                                        <% }else{ %>
+
+                                        <!-- <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z">
+                                            </path>
+                                        </svg> -->
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                                            </path>
+                                        </svg>
+                                        <% } %>
+
+                                    </span>
+                                    <div class="w-full">
+                                        <div
+                                            class="flex flex-col sm:flex-row justify-start sm:justify-between items-stretch sm:items-center">
+                                            <div class="font-semibold flex justify-between mb-1">
+                                                <span class="text-left capitalize">
+                                                    <%= comment.feature %>
+                                                </span>
+                                            </div>
+                                            <div class="flex justify-between sm:justify-end items-center">
+                                                <div>
+                                                    <% if(auth){ %>
+                                                    <% if(auth == comment.tester){ %>
+                                                    <strong
+                                                        class="ml-2 flex cursor-pointer items-center rounded text-purple-500 hover:bg-purple-300 hover:bg-purple-500 hover:text-white">
+                                                        <svg class="w-5 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                                            </path>
+                                                        </svg>
+                                                        <span class="mx-0.5">
+                                                            moi
+                                                        </span>
+                                                        <svg class="w-5 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                                            </path>
+                                                        </svg>
+                                                    </strong>
+                                                    <% }else{ %>
+                                                    <span
+                                                        class="rounded px-1.5 p-1 text-xs mr-1 bg-gray-200"><%= comment.tester %></span>
+                                                    <% } %>
+                                                    <% }else{ %>
+                                                    <span
+                                                        class="rounded px-1.5 p-1 text-xs mr-1 bg-gray-200"><%= comment.tester %></span>
+                                                    <% } %>
+                                                </div>
+
+
+                                                <span
+                                                    class="rounded px-1.5 p-1 text-xs moment_js"><%= comment.created_at %></span>
+                                            </div>
+                                        </div>
+                                        <div class="text-left mt-3 sm:mt-2 md:mt-0"><%= comment.comment %>
+                                        </div>
+                                    </div>
+                                </li>
+                                <% }) %>
+                            </ul>
+                            <% } %>
+                            <% } %>
+                        </div>
+
+                        <form id="commentForm" class="flex flex-col p-2 md:p-5">
+
+                            <h3
+                                class="flex-col text-gray-600 text-md mb-2 md:mb-5 flex md:flex-row md:items-center justify-between">
+                                <b class="text-lg font-medium">
+                                    Ajouter un
+                                    commentaire
+                                </b>
+
+                                <% if(auth){ %>
+                                <div class=" flex justify-between items-center md:justify-end">
+                                    <span class="hidden md:block">
+                                        Connecté en tant que
+                                    </span>
+                                    <strong class="transition-all duration-200 ease-in-out md:ml-2 text-sm flex justify-start
+                        md:justify-between sm:text-center cursor-pointer items-center rounded text-purple-500
+                        hover:bg-purple-300 hover:bg-purple-500 hover:text-white">
+                                        <svg class="hidden sm:block w-4 h-4 md:w-6 md:h-6" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                            </path>
+                                        </svg>
+                                        <span class="mx-0.5 text-sm">
+                                            <%= auth %>
+                                        </span>
+                                        <svg class="w-4 h-4 md:w-6 md:h-6" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                            </path>
+                                        </svg>
+                                    </strong>
+                                    </span>
+                                    <div
+                                        class="_btn_logout transition-all duration-200 ease-in-out flex text-center md:flex-row items-center text-white md:text-red-400 ml-3 shadow md:border border-red-500 hover:border-none md:shadow-none bg-red-400 md:bg-white rounded hover:text-white hover:shadow hover:bg-red-500 cursor-pointer px-1.5 py-0.5">
+                                        <span class="hidden sm:block">Se déconnecter</span>
+                                        <span class="sm:hidden">Déconnexion</span>
+                                        <span class="hidden sm:block ml-2 sm:ml-3">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z">
+                                                </path>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                <% } %>
+                            </h3>
+                            <div class="grid sm:grid-cols-3 gap-2 sm:gap-3  text-gray-600 md:gap-5">
+
+                                <% if (options.testers) { %>
+                                <% if (options.testers.length > 0) { %>
+                                <label for="tester" class="flex flex-col w-full">
+                                    <span class="mb-3">Utilisateur</span>
+                                    <select id="tester" name="tester" required class="rounded p-3 border w-full ">
+                                        <% if (auth) { %>
+                                        <option selected value="<%= auth %>"><%= auth %></option>
+                                        <% }else { %>
+                                        <option value="">--Votre nom--</option>
+
+                                        <% options.testers.forEach(function(tester){ %>
+                                        <option value="<%= tester %>"><%= tester %></option>
+                                        <% }) %>
+                                        <% } %>
+                                    </select>
+
+                                    <% if (!auth) { %>
+                                    <div class="password-hint hidden text-xs mt-2 text-blue-500">
+                                        <span>
+                                            Mot de passe:
+                                        </span>
+                                        <span>
+                                            prenomJourMois ex:
+                                        </span>
+                                        <span class="font-semibold">
+                                            keytchup1402
+                                        </span>
+                                    </div>
+                                    <input name="password" type="password" placeholder="Mot de passe"
+                                        class="hidden mt-0.5 rounded py-2 px-3 border w-full">
+                                    <% } %>
+                                    <span id="testerError"
+                                        class="transition-all duration-200 ease-in-out text-red-500"></span>
+                                </label>
+                                <% } %>
+                                <% } %>
+                                <% if (release.features) { %>
+                                <% if (release.features.length > 0) { %>
+                                <label for="feature" class="flex flex-col w-full ">
+                                    <span class="mb-3">Fonctionnalité</span>
+                                    <select id="feature" name="feature" required class="rounded p-3 border w-full ">
+                                        <option value="">--Fonctionalité--</option>
+                                        <% release.features.forEach(function(feature){ %>
+                                        <% if(feature.features){ %>
+                                        <% if(feature.features.length > 0){ %>
+                                        <optgroup label="<%= feature.name %>">
+                                            <% feature.features.forEach(function(subfeature){ %>
+                                            <option
+                                                value="<%= reviewed ? reviewed.indexOf(subfeature.slug) !== -1 ? null : subfeature.slug:subfeature.slug %>">
+                                                <%= reviewed ? reviewed.indexOf(subfeature.slug) !== -1 ? '--' : '':'' %>
+                                                <%= subfeature.name ?? subfeature.description.substring(0, 20) + '...' %>
+                                                <%= reviewed ? reviewed.indexOf(subfeature.slug) !== -1 ? '--' : '':'' %>
+                                            </option>
+                                            <% }) %>
+                                        </optgroup>
+                                        <% }else{ %>
+                                        <option
+                                            value="<%= reviewed ? reviewed.indexOf(feature.slug) !== -1 ? null : feature.slug : feature.slug   %>">
+                                            <%= reviewed ? reviewed.indexOf(feature.slug) !== -1 ? '--' : '':''   %>
+                                            <%= feature.name ?? feature.description.substring(0, 20) + '...' %>
+                                            <%= reviewed ? reviewed.indexOf(feature.slug) !== -1 ? '--' : '':''   %>
+                                        </option>
+                                        <% } %>
+                                        <% } %>
+                                        <% }) %>
+                                    </select>
+                                    <span id="featureError"
+                                        class="transition-all duration-200 ease-in-out text-red-500"></span>
+
+                                </label>
+                                <% } %>
+                                <% } %>
+                                <% if (options.review) { %>
+                                <% if (options.review.length > 0) { %>
+                                <label for="review" class="flex flex-col w-full">
+                                    <span class="mb-3">Retour</span>
+                                    <select id="review" name="review" required class="rounded p-3 border w-full ">
+                                        <option value="">--Remarque--</option>
+                                        <% options.review.forEach(function(review){ %>
+                                        <% if(review.subreview){ %>
+                                        <% if(review.subreview.length > 0){ %>
+                                        <optgroup label="<%= review.title %>">
+                                            <% review.subreview.forEach(function(subreview){ %>
+                                            <option value="<%= subreview.value %>"><%= subreview.title %></option>
+                                            <% }) %>
+                                        </optgroup>
+                                        <% }else{ %>
+                                        <option value="<%= review.value %>"><%= review.title %></option>
+                                        <% } %>
+                                        <% }else{ %>
+                                        <option value="<%= review.value %>"><%= review.title %></option>
+                                        <% } %>
+                                        <% }) %>
+                                    </select>
+                                    <span id="reviewError"
+                                        class="transition-all duration-200 ease-in-out text-red-500"></span>
+                                </label>
+                                <% } %>
+                                <% } %>
+                            </div>
+
+                            <% if (release.features) { %>
+                            <textarea name="comment" placeholder="Commentaire" class="border rounded p-3 mt-2 md:mt-3"
+                                cols="30" rows="3"></textarea>
+                            <div class=" my-2">
+                                <span id="emojiError"
+                                    class="transition-all duration-200 ease-in-out text-red-500 my-2 mr-3"></span>
+                                <span id="commentError"
+                                    class="transition-all duration-200 ease-in-out text-red-500"></span>
+                            </div>
+                            <% } %>
+                            <% if (release.features) { %>
+                            <input type="hidden" name="version" value="<%= release.slug %>" />
+                            <% } %>
+                            <% if (options.review) { %>
+                            <!-- <input type="hidden" name="review_title" value="" /> -->
+                            <% } %>
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-end mt-3">
+                                <span id="requestError"
+                                    class="transition-all duration-200 ease-in-out text-red-500 mb-3 md:mb-0 md:mr-3"></span>
+                                <a id="submitComment" type="submit" class="cursor-pointer w-full sm:w-auto rounded flex items-center justify-center px-3 py-2 w-40 bg-green-400 shadow hover:bg-green-700
+                                    text-white">
+                                    <span>Envoyer</span>
+                                    <span> </span>
+                                </a>
+                            </div>
+                        </form>
+                    </section>
+                    <!-- /Comments -->
+                </div>
+                <% } %>
+                <% }); %>
+                <% } %>
+                <!-- /Releases -->
+            </div>
+        </section>
+        <!-- /Main content -->
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var $appDebug = true;
+
+        var loadingTexts = ["Faut attraper ton coeur", "Veuillez patienter", "Ca va pas durer", "Ca va pas trop durer",
+            "Ca va pas durer.. peut-être", "Encore 1 seconde", "Hi there, hello", "Plus que 5 minutes"
+        ];
+        $("#loadingMessage").text(loadingTexts[Math.floor(Math.random() * loadingTexts.length)]);
+
+        var emptyTexts = ["Aucune Release", "Rien A Voir", "R.A.S", "--Wow, such empty--", "Rien", "C'est hesh",
+            "Néant", "Vide", "Vide intersidéral"
+        ];
+        var emptyMessages = ["Repassez plus tard", "Y'a rien à voir", "Circulez", "Rien", "Rien de rien",
+            "Vraiment rien", "Vide comme mon portefeuille"
+        ];
+        $("#emptyText").text(emptyTexts[Math.floor(Math.random() * emptyTexts.length)]);
+        $("#emptyMessage").text(emptyMessages[Math.floor(Math.random() * emptyMessages.length)]);
+
+        $("document").ready(() => {
+            setTimeout(() => {
+                $("#pagePreLoader").toggleClass("hidden");
+                $("#pageData").removeClass("hidden");
+                $("#pageNotification").removeClass("hidden");
+                // convert dates
+
+
+                moment.locale('fr', {
+                    months: 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'
+                        .split('_'),
+                    monthsShort: 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'
+                        .split('_'),
+                    monthsParseExact: true,
+                    weekdays: 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
+                    weekdaysShort: 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
+                    weekdaysMin: 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+                    weekdaysParseExact: true,
+                    longDateFormat: {
+                        LT: 'HH:mm',
+                        LTS: 'HH:mm:ss',
+                        L: 'DD/MM/YYYY',
+                        LL: 'D MMMM YYYY',
+                        LLL: 'D MMMM YYYY HH:mm',
+                        LLLL: 'dddd D MMMM YYYY HH:mm'
+                    },
+                    calendar: {
+                        sameDay: '[Aujourd’hui à] LT',
+                        nextDay: '[Demain à] LT',
+                        nextWeek: 'dddd [à] LT',
+                        lastDay: '[Hier à] LT',
+                        lastWeek: 'dddd [dernier à] LT',
+                        sameElse: 'L'
+                    },
+                    relativeTime: {
+                        future: 'dans %s',
+                        past: 'il y a %s',
+                        s: 'quelques secondes',
+                        m: 'une minute',
+                        mm: '%d minutes',
+                        h: 'une heure',
+                        hh: '%d heures',
+                        d: 'un jour',
+                        dd: '%d jours',
+                        M: 'un mois',
+                        MM: '%d mois',
+                        y: 'un an',
+                        yy: '%d ans'
+                    },
+                    dayOfMonthOrdinalParse: /\d{1,2}(er|e)/,
+                    ordinal: function (number) {
+                        return number + (number === 1 ? 'er' : 'e');
+                    },
+                    meridiemParse: /PD|MD/,
+                    isPM: function (input) {
+                        return input.charAt(0) === 'M';
+                    },
+                    meridiem: function (hours, minutes, isLower) {
+                        return hours < 12 ? 'PD' : 'MD';
+                    },
+                    week: {
+                        dow: 1,
+                        doy: 4
+                    }
+                });
+
+                // Date format
+                $(".moment_js").each((index, element) => {
+                    var dateString = $(element).text();
+                    var formatedDate = moment(dateString);
+                    $(element).text(formatedDate.fromNow());
+                });
+
+                // 
+                if (!$("#pageNotification").hasClass("hidden")) {
+                    setTimeout(() => {
+                        $("#pageNotification").addClass("hidden")
+                    }, 7000);
+                }
+            }, 500);
+        });
+
+        $("#btn_close_notification").click(function () {
+            $("#pageNotification").addClass("hidden");
+        })
+
+        // 
+        $(".release-block").addClass('border-b');
+        $(".release-block:eq(0)").addClass('border-t');
+        $(".release-block:eq(-1)").addClass('border-b-0').removeClass('border border-b');
+
+        log();
+        var downloadApp = false;
+
+
+        function clearErrors() {
+            $("#commentError").attr("class", "transition-all duration-200 ease-in-out").text("");
+            $("#emojiError").attr("class", "transition-all duration-200 ease-in-out").text("");
+            $("#testerError").addClass("transition-all duration-200 ease-in-out text-re").text("");
+            $("#featureError").addClass("transition-all duration-200 ease-in-out text-re").text("");
+            $("#reviewError").addClass("transition-all duration-200 ease-in-out text-re").text("");
+            $("#requestError").addClass("transition-all duration-200 ease-in-out text-re").text("");
+        }
+
+        // update tester login
+        $("select[name='tester'").on("change", function () {
+            $("input[name='password']").removeClass("hidden");
+            $(".password-hint").removeClass("hidden");
+        });
+        var onGoingRequest = false;
+
+
+        $("input[name='password']").on("keyup", async function () {
+            $("#testerError").attr("class", "").attr("class", "transition-all duration-200 ease-in-out")
+                .text("");
+
+            var data = {
+                username: $("select[name='tester']").val(),
+                password: $("input[name='password']").val(),
+            };
+            debugLog(">>>> login", data);
+            if (data.password.length < 5) {
+                $("#testerError").text(
+                    "...");
+                return;
+            }
+            try {
+                if (onGoingRequest) {
+                    debugLog(">>> >| holup ongoing ajax");
+                    return;
+                }
+                debugLog(">>> > login in");
+                $("#testerError").attr("class", "transition-all duration-200 ease-in-out").text(".....");
+                onGoingRequest = true;
+
+                $.ajax({
+                    url: "/releases/login",
+                    type: "post",
+                    dataType: 'json',
+                    accepts: 'json',
+                    data,
+                    success: (response) => {
+                        if (!response.success) {
+                            debugLog("<<<xx not logged", response);
+                            $("#testerError").addClass("text-yellow-500").text("meh");
+                            if (response.message) {
+                                $("#testerError").addClass("text-yellow-500").text(response
+                                    .message);
+                            }
+                            onGoingRequest = false;
+                            return;
+                        }
+                        $("input[name='password']").toggleClass("hidden");
+                        $(".password-hint").toggleClass("hidden");
+                        $("#tester").attr("disabled", true);
+                        var fN = response.data;
+                        $("#testerError").addClass("text-green-500").text(" Bienvenue " + fN +
+                            " \\(^^)/");
+                        setTimeout(() => {
+                            // $("#testerError").toggleClass("text-red-500 text-green-500").text("");
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 500);
+                        }, 1000);
+                        onGoingRequest = false;
+
+                    },
+                    error: (xhr, status, error) => {
+                        debugLog("<<xx error", status, error);
+                        onGoingRequest = false;
+                        var texts = ["obscure", "bizarre", "inattendue"];
+                        var
+                            bools = [true,
+                                false
+                            ]; /*/ Bitch i'm code god */
+                        var adj = texts[Math.floor(Math.random() * texts.length)] + "ment";
+                        if (!bools[Math.floor(Math.random() * bools.length)]) adj = "";
+                        var
+                            text = texts[Math.floor(Math.random() * texts.length)];
+                        $("#testerError").text(xhr.status + ": Une erreur " + adj + " " + text +
+                            " s'est produite");
+                        onGoingRequest = false;
+                    },
+
+                });
+            } catch (e) {
+                // error ajax
+                debugLog("xxx error ajax", e);
+            }
+        });
+
+        $("select[name='feature']").on("change", function (event) {
+            $("#featureError").html("");
+        });
+        $("select[name='review']").on("change", function (event) {
+            clearErrors();
+
+            var text = $("select[name='review'] option:selected").filter(()=>{return $(this).val() != ''}).text()
+            var value = $(this).val();
+            // $("input[name='review_title'").val(text);
+            try{
+                var chunks = text.split('-');
+                text = chunks[0];
+            }catch(exc){
+                debugLog(">>> placeholder split exception", exc);
+            }
+            debugLog(">> review changed", value, text);
+            if (value.length > 0) {
+                $("textarea[name='comment']").attr('placeholder', text + "\n\n");
+                debugLog(">>> placeholder", text);
+            }
+            if (value === 'good') {
+                var yay = ["Yay! \\(^^)/", "Yay!", "\\(^^)/", "Miciii :'\) ", "(◕‿◕)", "(｡◕‿◕｡)", "ᕕ(✿◕‿◕)ᕗ",
+                    "\(◕◡◕)/",
+                    "♪~ ᕕ(ᐛ)ᕗ", "ᕦ(ò_óˇ)ᕤ", "( ･_･)♡", "(;´༎ຶД༎ຶ`)👍🏿",
+                    "ಠ‿↼",
+                    "ヾ(⌐■_■)ノ", "(ಥ﹏ಥ)", ""
+                ];
+                var text = yay[Math.floor(Math.random() * yay.length)];
+                $("#emojiError").addClass('text-green-500').text(text);
+            } else {
+                if (value === 'suggestion') {
+                    var mmm = ["ب_ب", "ಠಠ"];
+                    var text = mmm[Math.floor(Math.random() * mmm.length)];
+                    $("#emojiError").addClass('text-yellow-500').text(text);
+                    return;
+                }
+                if (value === 'other') {
+                    var mwell = ["oo", "ಠಠ", "ರ_ರ", "( ･_･)♡", "( ͡°Ĺ̯ ͡° )", "☝🏿(°ロ°)", "◉_◉",
+                        "(\"º _ º)", "ಠ~ಠ"
+                    ];
+                    var text = mwell[Math.floor(Math.random() * mwell.length)];
+                    $("#emojiError").addClass('text-blue-500').text(text);
+                    return;
+                }
+                var meh = ["meh", ":/", "ಠ_ಠ", "( ͡°Ĺ̯ ͡° )", "ب_ب", "ಠಠ", "(≖︿≖ )", "(ノಠ益ಠ)ノ彡┻━┻", "ლ(ಠ益ಠლ)",
+                    "(╯°□°）╯︵/( ‿⌓‿ )\\", "(┛◉Д◉)┛彡┻━┻", "┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻", "ಠoಠ", "(\"º _ º)", "òó",
+                    "ಠ_ಥ"
+                ];
+                var text = meh[Math.floor(Math.random() * meh.length)];
+                $("#emojiError").addClass('text-yellow-500').text(text);
+            }
+        })
+
+        $("textarea[name='comment'").on("change", function () {
+
+        });
+        $("#submitComment").on("click", function () {
+            loadingLoop();
+            if (downloadApp) {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+                return;
+            }
+            $("#commentForm").submit();
+        });
+        $("#commentForm").on("submit", function (event) {
+            loadingLoop();
+            event.preventDefault();
+            clearErrors();
+            var formFields = $(this).serializeArray();
+            debugLog(formFields);
+
+            // make request
+            var data = {};
+            formFields.forEach((field) => {
+                data[field.name] = field.value;
+            });
+
+            data['tester'] = $("select[name='tester']").val();
+
+            if (data['feature'].length === 0) {
+                $("#featureError").html("Tu as déjà fait un retour sur cette fonctionnalité");
+                stopLoadingLoop();
+                return;
+            }
+            // valide review content
+            if (data['review'] !== 'good' && data['review'] !== 'slow') {
+                var comment = data['comment'];
+                if (comment.length === 0) {
+                    var texts = [
+                        "Plus de détails please",
+                        "Hm, tu veux bien décrire le souci rencontré ?",
+                        "Okay, explique l'erreur stp",
+                        "Qu'est-ce qui a mal marché ?",
+                        "Setsumei kudasai"
+                    ];
+                    if (data['review'] === 'suggestion') {
+                        texts = [
+                            "T'as oublié d'écrire la suggestion",
+                            "Hm, tu veux bien expliquer ta suggestion ?",
+                            "On t'écoute, explique ta proposition",
+                            "Setsumei kudasai"
+                        ];
+                    }
+                    if (data['review'] === 'other') {
+
+                        texts = [
+                            "C'est vide hun, si t'as pas remarqué ಠ_ಠ",
+                            "C'est vide ಠ_ಠ",
+                            "Donc de deviner ce que t'as dans la tête ? ಠ_ಠ",
+                            "ಠ_ಠ",
+                        ];
+                    }
+
+                    $("#commentError").addClass('text-red-500').text(texts[Math.floor(Math.random() * texts
+                        .length)]);
+                    stopLoadingLoop();
+                    return;
+                }
+                var words = comment.split(' ');
+
+
+                var texts = [
+                    "Il faut plus que " + words.length + " mots pour comprendre ton souci :/",
+                    "Hm, tu pourrais élaborer ?",
+                    "J'ai besoin de plus de détails que ça",
+                    "Mieux tu expliques, mieux je comprends",
+                    "N'oublie pas les détails",
+                    "N'oublie pas les détails, ça compte",
+                    "Explique bien",
+                    "Faut bien expliquer, yai pas compwi",
+                    "Ton explication est trop courte pour comprendre le problème ರ_ರ",
+                    "Explique bien nan",
+                ];
+
+                if (data['review'] === 'suggestion') {
+                    if (words.length < 7) {
+                        texts = [
+                            "Plus de détails stp",
+                            "Hm, tu veux bien expliquer ta suggestion plus en détail ?",
+                            "On t'écoute, explique ta proposition",
+                            "N'oublie pas les détails",
+                            "N'oublie pas les détails, ça compte",
+                            "Explique bien",
+                            "Faut bien expliquer, yai pas compwi",
+                            "Setsumei kudasai"
+                        ];
+                    }
+                }
+                if (data['review'] === 'other') {
+                    texts = [
+                        "N'oublie pas les détails",
+                        "N'oublie pas les détails, ça compte",
+                        "Explique bien",
+                        "Faut bien expliquer, yai pas compwi",
+                    ];
+                }
+                if (data['review'] === 'warning') {
+                    texts = [
+                        "Qu'est-ce qui est affiché dans l'erreur ?",
+                        "Que dit l'erreur ?",
+                        "Qu'est-ce que ça affiche ?",
+                        "Tu peux expliquer l'erreur plus en détails stp ?",
+                        "Copie-colle le message d'erreur stp",
+                    ];
+                }
+                if (data['review'] === 'error') {
+                    texts = [
+                        "Qu'est-ce qui s'affiche ?",
+                        "Que dit l'erreur ?",
+                        "Qu'est-ce qui ne marche pas ?",
+                        "Qu'est-ce que ça affiche ?",
+                        "Tu peux expliquer l'erreur plus en détails stp ?",
+                        "Copie-colle le message d'erreur stp",
+                    ];
+                }
+
+                if (data['review'] === 'crash' && words.length < 10) {
+                    $("#commentError").addClass('text-red-500').text(texts[Math.floor(Math.random() * texts
+                        .length)]);
+                    stopLoadingLoop();
+                    return;
+                }
+                if (data['review'] === 'error' && words.length < 7) {
+                    $("#commentError").addClass('text-red-500').text(texts[Math.floor(Math.random() * texts
+                        .length)]);
+                    stopLoadingLoop();
+                    return;
+                }
+                if (data['review'] === 'warning' && words.length < 6) {
+                    $("#commentError").addClass('text-red-500').text(texts[Math.floor(Math.random() * texts
+                        .length)]);
+                    stopLoadingLoop();
+                    return;
+                }
+                if (data['review'] !== 'other' && words.length < 4) {
+                    $("#commentError").addClass('text-red-500').text(texts[Math.floor(Math.random() * texts
+                        .length)]);
+                    stopLoadingLoop();
+                    return;
+                }
+            }
+
+            // // make request
+            // var data = {};
+            // formFields.forEach((field) => {
+            //     data[field.name] = field.value;
+            // });
+            // format comment
+            if (data['comment'] == '') {
+                data['comment'] = $("textarea[name='comment']").attr('placeholder');
+            } else {
+                // data['comment'] = data['review_title'] + "\n" + data['comment'];
+            }
+
+            // 
+            storeComment(data);
+        });
+
+
+        function storeComment(data) {
+            debugLog(">>>> ", data);
+            loadingLoop();
+            $("#requestError").text("");
+            try {
+                $.ajax({
+                    url: "/releases",
+                    type: "post",
+                    dataType: 'json',
+                    accepts: 'json',
+                    data,
+                    success: (response) => {
+                        stopLoadingLoop();
+                        debugLog("<<< response", response);
+                        if (!response.success) {
+                            $("#submitComment").removeClass("bg-green-400 hover:bg-green-700");
+                            $("#requestError").text(response.message);
+                            if (response.error == "NOT_DOWNLOADED") {
+                                $("#submitComment").attr("href", "/releases/download/" + data.version);
+
+                                $("#submitComment").addClass(
+                                    "bg-yellow-400 hover:bg-yellow-700").html(`<span>Télécharger ici</span>
+                                <span><svg class="w-5 h-5 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
+                                            clip-rule="evenodd"></path>
+                                    </svg></span>`);
+                                downloadApp = true;
+                                return;
+                            }
+                            $("#submitComment").toggleClass(
+                                "bg-green-400 hover:bg-green-700 bg-red-400 hover:bg-red-700").html(`<span>Réessayer</span>
+                                <span><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                    </path>
+                                </svg></span>`);
+                            return;
+                        }
+                        $("#submitComment").html(`<span>Enregistré</span> <span class="ml-3"><svg class="w-6 h-6" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg></span>`);
+                        // Load comments
+                        $('#section-comments-' + response.data.version).load(document.URL +
+                            '#section-comments-' + response.data.version);
+
+                        var commentsCount = response.data.count + " Commentaire" + response.data.count > 1 ?
+                            's' : '';
+                        var commentsElement = "#comments-count-" + response.data.version
+                        debugLog(commentsCount, response.data.version, commentsElement);
+                        $(commentsElement).text(commentsCount);
+                        debugLog($(commentsCount));
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: (xhr, status, error) => {
+                        stopLoadingLoop();
+                        debugLog("<<xx error", status, error);
+                        var texts = ["obscure", "bizarre", "inattendue"];
+                        var bools = [true, false];
+                        // Bitch i'm code god
+                        var adj = texts[Math.floor(Math.random() * texts.length)] + "ment";
+                        if (!bools[Math.floor(Math.random() * bools.length)]) adj = "";
+                        var text = texts[Math.floor(Math.random() * texts.length)];
+                        $("#requestError").text(xhr.status + ": Une erreur " + adj + " " + text +
+                            " s'est produite");
+                        $("#submitComment").toggleClass(
+                            "bg-green-400 hover:bg-green-700 bg-red-400 hover:bg-red-700").html(`<span>Oups</span>
+                        <span><svg class="w-6 h-6" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg></span>`);
+                    },
+                });
+            } catch (e) {
+                stopLoadingLoop();
+                // error ajax
+                debugLog("xxx error ajax", e);
+            }
+
+        }
+        // Focus on form
+        $(".btn_write_review").click(_ => {
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $("textarea[name='comment']").offset().top
+            }, 1000);
+        });
+
+        // Déconnexion
+        $("._btn_logout").click(_ => {
+            debugLog(">>>> logout");
+            try {
+                $.ajax({
+                    url: "/releases/logout",
+                    type: "post",
+                    dataType: 'json',
+                    accepts: 'json',
+                    data: null,
+                    success: (response) => {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 300);
+                    },
+                    error: (xhr, status, error) => {
+                        debugLog("<<xx error", status, error);
+                        return;
+                        var texts = ["obscure", "bizarre", "inattendue"];
+                        var
+                            bools = [true,
+                                false
+                            ]; // Bitch i'm code god var adj=texts[Math.floor(Math.random() * texts.length)]
+                        +
+                        "ment";
+                        if (!bools[Math.floor(Math.random() * bools.length)]) adj = "";
+                        var
+                            text = texts[Math.floor(Math.random() * texts.length)];
+                        $("#requestError").text(xhr.status +
+                            ": Une erreur " + adj + " " + text + " s'est produite");
+                        $("#submitComment").toggleClass(
+                            "bg-green-400 hover:bg-green-700 bg-red-400 hover:bg-red-700"
+                        ).html(`<span>Oups</span>
+                    <span><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg></span>`);
+                    },
+                });
+            } catch (e) {
+                // error ajax
+                debugLog("xxx error ajax", e);
+            }
+        });
+
+        var loop;
+
+        function loadingLoop() {
+            var i = 0;
+            var loadingAnimation = ["-", "/", "|", "\\"];
+
+            var texts = ["Chargement ",
+                // "Avracadabra ", "Traitement ", "Envoi "
+            ];
+            var text = texts[Math.floor(Math.random() * texts.length)];
+            $("#submitComment").removeClass("bg-red-400 hover:bg-red-700 justify-center")
+            $("#submitComment").addClass("bg-green-400 hover:bg-green-700 justify-between")
+            $("#submitComment").css('transition', "all .2s ease-in-out");
+
+            clearInterval(loop);
+            loop = setInterval(() => {
+                i++;
+                if (i > loadingAnimation.length - 1)
+                    i = 0;
+                $("#submitComment").html(
+                    `<span>${text}</span> <span class="ml-3">${loadingAnimation[i]}</span>`);
+            }, i > 2 ? 300 : 100);
+        }
+
+        function stopLoadingLoop() {
+            clearInterval(loop);
+            $("#submitComment").removeClass("bg-red-400 hover:bg-red-700 justify-center")
+            $("#submitComment").addClass("bg-green-400 hover:bg-green-700 text-center")
+            $("#submitComment").css('transition', "all .2s ease-in-out").html("Envoyer");
+        }
+
+        function log() {
+            // if(!$appDebug){
+            // clearInterval(loop);
+            // loop = setInterval(() => {
+            console.clear();
+            console.log("** AMANE Hosanna @ JooL International **\n");
+            // }, 100);
+            // }
+        }
+
+        function debugLog(...params) {
+            if ($appDebug) console.log(...params);
+        }
+    </script>
+</body>
+
+</html>

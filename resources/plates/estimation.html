@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estimation</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <main id="app">
+        <div class="md:w-11/12 lg:w-10/12 xl:w-9/12 2xl:w-8/12 mx-auto md:p-5">
+            <div class=" text-center md:mb-10 my-5 p-5">
+                <div class="flex justify-end">
+                    <img :src="flag[locale]" @click="switchLocale"
+                        class="rounded-full border-2 border-gray-300 p-0.5 w-10 h-10 mb-3" />
+                </div>
+                <h1 @dblclick="resetApp" class="text-lg md:text-xl font-bold">
+                    <span v-if="locale == 'fr'">
+                        Estimation d'application web
+                    </span>
+                    <span v-else>
+                        Estimate your Web application
+                    </span>
+                </h1>
+                <h2 class="mt-3 text-md md:text-lg">
+                    <span v-if="locale == 'fr'">
+                        Combien coûte une application web ? Combien de temps ça prend pour developper une application
+                        web ?
+                    </span>
+                    <span v-else>
+                        How much does a web application cost ? How much time does it take to develop a web application ?
+                    </span>
+                </h2>
+            </div>
+
+            <div v-if="error.apiError"
+                class="mx-2 flex flex-col justify-center items-center py-24 md:py-32 p-10 rounded bg-gray-200 text-center text-red-500">
+                <div class="mb-3">
+                    Oups, {{error.text}}
+                </div>
+                <img :src="error.image" />
+            </div>
+            <div v-else>
+                <div v-if="isLoading"
+                    class="flex flex-col justify-center items-center text-center w-full py-24 md:py-32 rounded animate-pulse bg-gray-200">
+                    <div class="mb-3">
+                        Loading..
+                    </div>
+
+                    <img class="h-10 w-auto block animate-spin"
+                        src="https://img.icons8.com/fluency/48/000000/loading.png" />
+                </div>
+                <!-- Error div -->
+
+                <!-- Form -->
+                <form v-else-if="questionaire.length > 0" id="estimationForm">
+                    <!--  -->
+                    <!-- <div>Web</div> -->
+                    <!-- Section pour une question -->
+                    <section
+                        class="mb-5 bg-green-500 md:rounded p-2 pt-0 sm:p-5 sm:pt-0 md:p-10 md:pt-0 shadow text-center">
+                        <!-- Project Title -->
+                        <div
+                            class="text-white flex items-center justify-center font-medium text-lg md:text-3xl capitalize p-2 sm:p-5 md:p-10">
+                            <span v-if="selectedEstimation.projectName">
+                                Projet : {{selectedEstimation.projectName}}
+                            </span>
+                            <span v-if="selectedEstimation.projectName"
+                                @click="deleteEstimation(selectedEstimation.projectName)"
+                                class="cursor-pointer hover:text-red-700 text-red-500 ml-3">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class=" bg-white rounded p-2 sm:p-5 lg:p-10 mb-5" v-for="question in questionaire"
+                            :key="question.name">
+
+                            <div class="mb-5 text-lg md:text-xl font-semibold">
+                                {{locale == 'fr' ? question.title_fr : question.title}}
+                            </div>
+
+                            <div class="grid gap-5 grid-cols-3"
+                                :class="[question.answers.length >= 4 ? 'md:grid-cols-4': '']">
+                                <div class="rounded cursor-pointer md:p-1 lg:p-2 md:hover:bg-gray-100"
+                                    v-for="answer in question.answers" :key="answer.value">
+                                    <input class="hidden_input"
+                                        @change="onChange(question.name, question.type, answer.value)"
+                                        :id="answer.value" :type="question.type" :name="question.name"
+                                        :value="answer.value" />
+                                    <!-- v-model="question.type == 'checkbox' ? input[question.name][answer.value] : input[question.name]" -->
+
+                                    <label :class="[isInputSelected(question.type, question.name, answer.value), `h-full flex
+                                        flex-col
+                                        justify-between items-center cursor-pointer rounded-md`]" :for="answer.value">
+                                        <div class="hidden md:block rounded p-0.5 px-1 mb-3 text-md md:text-lg">
+                                            {{locale == 'fr' ? answer.title_fr : answer.title}}
+                                        </div>
+
+                                        <div class="input_image p-1 md:p-2 rounded-full">
+                                            <img class="rounded-full w-full h-auto block" :src="answer.image"
+                                                :alt="locale == 'fr' ? answer.title_fr : answer.title" />
+                                        </div>
+
+                                        <div class="input_text md:hidden rounded p-0.5 px-1 mt-2 text-xs md:text-md">
+                                            {{locale == 'fr' ? answer.title_fr : answer.title}}
+                                        </div>
+
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Results -->
+                    <section class="md:mx-0 md:mx-2 p-2 mb-10 md:p-5 rounded bg-gray-100 ">
+                        <!--  -->
+                        <div class="md:w-11/12 lg:w-10/12 xl:w-9/12 2xl:w-8/12 mx-auto flex flex-col md:justify-end">
+                            <div
+                                class="flex flex-col-reverse md:flex-row flex-wrap md:flex-nowrap gap-10 md:gap-5 md:items-center justify-between ">
+                                <div class="flex w-full flex-wrap md:flex-nowrap gap-3 cursor-pointer items-center">
+                                    <div v-if="display.projectNameInput" class="relative w-full md:w-auto">
+                                        <input id="projectName" v-model="formData.projectName"
+                                            @keyup="onProjectNameUpdated" type="text" name="projectName"
+                                            class="input w-full md:w-auto rounded p-2 transition-all duration-200 ease-in focus:outline-none">
+                                        <label for="projectName"
+                                            class="projectNameInputLabel pl-1 transition-all duration-200 ease-in"
+                                            for="quoteName">Nom du projet</label>
+                                    </div>
+                                    <div @click="saveQuote"
+                                        :class="[isFormDataValid ? (display.projectNameInput ? `bg-green-500 hover:bg-green-600` : 'bg-blue-500 hover:bg-blue-600') : `bg-gray-500 hover:bg-gray-600`, `transition ml-auto md:m-0 flex items-center justify-between rounded shadow-2xl text-white px-3 py-2 hover:shadow-md`]">
+
+                                        <span v-if="saveQuoteBtn.isLoading"
+                                            class="transition loadingSpinner mr-2">...</span>
+                                        <span v-else-if="saveQuoteBtn.success" class="mr-2">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </span>
+                                        <span v-else class="mr-2">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                            </svg>
+                                        </span>
+
+
+                                        {{saveQuoteBtn.text ?? 'Sauvegarder'}}
+                                    </div>
+
+                                </div>
+                                <div
+                                    class=" text-lg sm:text-xl md:text-2xl font-semibold flex justify-between md:justify-end items-end w-full md:w-auto">
+                                    <span class="mr-5 flex items-center">
+                                        <img :src="flag[locale]" @click="switchLocale"
+                                            class="rounded-sm border-2 border-gray-300 p-0.5 w-10 h-6 mr-3" />
+                                        Total:
+                                    </span>
+                                    <div v-if="isTotalLoading"
+                                        class="ml-2 animate-pulse w-1/4 h-5 md:h-8 rounded bg-gray-500"></div>
+                                    <div v-else class="ml-2 flex items-center">
+                                        <div class="font-bold">
+                                            <!-- {{total.price}} {{total.currency}} -->
+                                            {{formatted_amount}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-md mt-2 font-medium flex justify-end  text-gray-600 items-end ">
+                                <div v-if="isTotalLoading" class="flex flex-col items-end mt-2 md:mt-3">
+                                    <div class="animate-pulse mb-2 w-44  md:w-52 h-8 rounded bg-gray-400"></div>
+                                    <div class="animate-pulse w-36 md:w-44 h-4 rounded bg-gray-300"></div>
+                                </div>
+
+                                <div v-else-if="total.price > 0" class="flex flex-col items-end">
+                                    <div v-if="total.days.designer > 0"
+                                        class="font-bold md:block flex flex-col items-end">
+                                        {{days('designer')}}
+
+                                        <span v-if="weeks('designer')" class="text-sm text-gray-400">
+                                            {{weeks('designer')}}
+                                        </span>
+                                    </div>
+                                    <div v-if="total.days.developer > 0"
+                                        class="font-bold md:block flex flex-col items-end">
+                                        {{days()}}
+                                        <!--  -->
+                                        <span v-if="weeks()" class="text-sm text-gray-400">
+                                            {{weeks()}}
+                                        </span>
+                                    </div>
+                                    <div class="font-bold text-md md:block flex  items-end">
+                                        <span>
+                                            {{total.days.total}}
+                                            {{locale == 'fr'? "Jours en total": "Days in total"}}
+                                        </span>
+
+                                        <span v-if="weeks('total')" class="ml-2 text-sm text-gray-400">
+                                            {{weeks('total')}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+                <!-- Empty -->
+                <div v-else
+                    class="mx-2 flex flex-col justify-center items-center py-32 p-10 rounded bg-gray-200 text-center text-gray-700">
+                    <div>
+                        <span v-if="locale == 'fr'">
+                            -- Wow, si vide --
+                        </span>
+                        <span v-else>
+                            -- Wow, such empty --
+                        </span>
+                    </div>
+                    <div class="mt-3 text-gray-300 text-sm">
+                        <span v-if="locale == 'fr'">
+                            Repassez plus tard pour les mises à jour
+                        </span>
+                        <span v-else>
+                            Come back soon for updates
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+
+            props: ['locale'],
+            data() {
+                return {
+                    selectedEstimation: {},
+                    estimations: [],
+                    display: {
+                        projectNameInput: false,
+                    },
+                    formData: {
+                        projectName: '',
+                    },
+                    saveQuoteBtn: {
+                        class: 'bg-blue-500 hover:bg-blue-600',
+                        isLoading: false,
+                        text: "Sauvegarder",
+                    },
+                    isFormDataValid: true,
+                    dev: true,
+                    apiUrl: "http://127.0.0.1:8000",
+                    apiKey: "AmaneHosanna",
+                    flag: {
+                        fr: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_C%C3%B4te_d%27Ivoire.svg/400px-Flag_of_C%C3%B4te_d%27Ivoire.svg.png",
+                        en: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/1600px-Flag_of_the_United_States.svg.png",
+                    },
+                    lang: {
+                        ci: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_C%C3%B4te_d%27Ivoire.svg/400px-Flag_of_C%C3%B4te_d%27Ivoire.svg.png",
+                        usa: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/1600px-Flag_of_the_United_States.svg.png",
+                    },
+                    isLoading: true,
+                    isTotalLoading: false,
+                    // questions data
+                    questionaire: [],
+                    // internal settings
+                    settings: {},
+                    error: {
+                        apiError: false,
+                        text: this.locale == 'fr' ? "Petit souci" : "Something went wrong",
+                        image: "https://img.icons8.com/color/48/000000/error--v1.png",
+                    },
+                    // enregistrer les choix utilisateur
+                    input: {
+                        //
+                        // checkbox
+                        // question: [
+                        //     // answername : true
+                        // ]
+                        // question: reponse // radio
+                    },
+                    // total
+                    total: {
+                        price: 0,
+                        currency: 'Fcfa',
+                        days: {
+                            developer: 0,
+                            designer: 0,
+                            total: 0,
+                        }
+                    }
+
+                };
+            },
+            mounted() {
+                if (!this.locale) {
+                    this.locale = 'fr';
+                }
+                this.debugLog("!! mounted !!", this.locale)
+
+                this.initUi();
+            },
+            computed: {
+                settingsNotValid: function () {
+
+                    var isValid = !this.questionaire || (!this.settings.developer_day || !this.settings
+                        .designer_day || !this.settings.ui_field_name || !this.settings.currency || !
+                        this.locale
+                    );
+
+
+                    debugLog("== settings", this.questionaire.length, this.settings.developer_day,
+                        this
+                        .settings.designer_day, this.settings.ui_field_name);
+
+                    debugLog(">> settingsNotValid", isValid);
+
+                    return isValid;
+                },
+                currency: function () {
+                    var c = "";
+                    c = this.locale == 'fr' ? this.settings.currency_fr : this.settings.currency;
+                    return c;
+                },
+                formatted_amount: function () {
+                    try {
+
+                        var formatter = new Intl.NumberFormat(this.locale == 'fr' ? 'fr-FR' : 'en-US', {
+                            style: 'currency',
+                            currency: this.currency,
+
+                            // These options are needed to round to whole numbers if that's what you want.
+                            //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+                            //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+                        });
+
+                        return formatter.format(this.total.price);
+                    } catch (err) {
+                        if (this.dev) {
+                            debugLog(">> formatt err");
+                            this.error.apiError = true;
+                            //    this.error.text = "Som"
+                        }
+                    }
+                },
+                designer_day: function () {
+                    var c = 16000;
+                    c = this.locale == 'fr' ? this.settings.designer_day_fr : this.settings.designer_day;
+                    return parseInt(c);
+                },
+                developer_day: function () {
+                    var c = 24000;
+                    c = this.locale == 'fr' ? this.settings.developer_day_fr : this.settings.developer_day;
+                    return parseInt(c);
+                },
+                // developerWeeks: function(){
+                //     var weeks = false;
+                //     if(this.total.days.developer / 5 > 0){
+                //         weeks = (this.total.days.developer / 5 ).toFixed(1);
+                //         // is even no floating point
+                //         weeks = weeks % 1 == 0 ? weeks | 0 : weeks;
+
+                //     }
+                //     if(this.locale == 'fr')
+                //         return weeks ? ` (${weeks} semaine${weeks>1?'s':''})` : weeks;
+                //     return weeks ? ` (${weeks} week${weeks>1?'s':''})` : weeks;
+                // }
+            },
+            created() {
+                this.debugLog("!! App built !!");
+                // api fetch questionaire
+                // check for cache data
+                // this.initAppFromCache();
+                // api init app
+                this.initApp();
+                this.initEstimationsFromCache();
+            },
+
+            methods: {
+                debugLog: function (...args) {
+                    if (this.dev) console.log(...args);
+                },
+                initUi: function () {
+
+                },
+                switchLocale: function () {
+                    this.locale = this.locale == 'fr' ? 'en' : 'fr';
+                    this.updateTotal();
+                },
+                days: function (type = 'developer') {
+
+                    var days = this.total.days[type];
+                    var s = days > 1 ? 's' : '';
+                    var text = '';
+                    var text = this.locale == 'fr' ? `jour${s} de developpement` : `developer day${s}`;
+
+                    if (type == 'designer') {
+                        var text = this.locale == 'fr' ? `jour${s} de design` : `designer day${s}`;
+                    }
+
+                    return `${days} ${text}`;
+                },
+                weeks: function (type = 'developer') {
+
+                    var weeks = false;
+
+                    if (this.total.days[type] / 5 > 0) {
+                        weeks = (this.total.days[type] / 5).toFixed(1);
+                        // is even no floating point
+                        weeks = weeks % 1 == 0 ? weeks | 0 : weeks;
+                    }
+
+                    if (this.locale == 'fr')
+                        return weeks ? ` (${weeks} semaine${weeks>1?'s':''})` : weeks;
+                    return weeks ? ` (${weeks} week${weeks>1?'s':''})` : weeks;
+                },
+                onChange(questionName, questionType, answer) {
+                    if (!this.dev) {
+                        console.clear();
+                        console.log("*** written by amane.dev ***");
+                        console.log("** inspired by https://estimatemyapp.com/ **");
+                    }
+                    //
+
+                    this.debugLog(">> onChange", questionName, answer);
+                    //
+                    this.debugLog(">> input", this.input);
+                    this.debugLog(">> input for question", this.input[questionName]);
+
+                    // ! this.input[questionName] = {};
+                    if (questionType == "radio") {
+                        this.input[questionName] = answer;
+                    } else {
+                        // case checkbox
+                        // trouver l'index
+                        if (this.input[questionName][answer]) {
+                            // set inverse for when element exists
+                            this.input[questionName][answer] = !this.input[questionName][answer];
+                        } else {
+                            // set true for thirst click
+                            this.input[questionName][answer] = true;
+                        }
+                    }
+
+                    this.debugLog(">> changeUpdated", questionName, answer);
+                    //
+                    this.debugLog(">> input", this.input);
+                    this.debugLog(">> input for question", this.input[questionName]);
+
+
+                    // this.fetchTotal();
+                    this.updateTotal();
+                },
+                isInputSelected(type, question, answer) {
+                    if (!this.selectedEstimation) return '';
+                    if (!this.selectedEstimation.data) return '';
+                    if (type == "checkbox") if(this.selectedEstimation.data[question][answer]) return 'selected';
+                    if (this.selectedEstimation.data[question] == answer) return 'selected';
+                },
+                async initAppFromCache() {
+                    this.debugLog(">> initAppFromCache");
+
+                    // Load questionaire
+                    if (localStorage.appData) {
+                        try {
+                            var appData = JSON.parse(localStorage.appData);
+                            this.questionaire = appData.questionaire;
+                            this.settings = appData.settings;
+
+                            this.debugLog("<< q", this.questionaire.length);
+                            this.debugLog("<< s", this.settings.length);
+
+                            if (this.settingsNotValid()) {
+                                throw "Exception: invalid_settings";
+                            }
+                            this.setupInput(this.questionaire);
+                            this.updateTotal();
+                            this.isLoading = false;
+                        } catch (parseError) {
+                            this.debugLog("xx >>");
+                            this.initApp();
+                        }
+                        return;
+                    }
+                },
+                async initEstimationsFromCache() {
+                    this.debugLog(">> initEstimationsFromCache");
+
+                    // Load estimations
+                    if (localStorage.estimations) {
+                        try {
+                            this.estimations = JSON.parse(localStorage.estimations);
+                            this.debugLog("<< e", this.estimations);
+                            if (this.estimations.length > 0) {
+                                this.selectedEstimation = this.estimations[0];
+                                this.debugLog("<< s", this.selectedEstimation);
+                                if (this.selectedEstimation) {
+
+                                    if (this.selectedEstimation.data.app_size) {
+                                        this.debugLog(">>set ", this.selectedEstimation.data);
+                                        // this.updateSelected(this.selectedEstimation.data);
+                                        this.updateTotalFromSelected();
+                                    }
+                                }
+                                this.isLoading = false;
+                            }
+                            this.isLoading = false;
+                        } catch (parseError) {
+                            this.debugLog("xx estimations from cache >>", parseError);
+                        }
+                        return;
+                    }
+                },
+                resetApp() {
+                    this.debugLog(">>><<< resetApp");
+                    localStorage.estimations = null;
+                    window.location.reload();
+                },
+                // fetches the questions from the api but also the settings
+                async initApp() {
+                    //
+                    this.debugLog(">> initApp");
+
+                    try {
+                        // Get cached questions first
+
+                        // Setup input
+                        const response = await fetch(this.apiUrl + "/data/questionaire?apikey=" + this
+                            .apiKey);
+
+                        this.debugLog("<< r", response.status);
+
+                        if (response.status !== 200) {
+                            this.error.apiError = true;
+                            //
+                            if (response.status >= 300) {
+                                this.error.text = "Too many redirects"
+                            }
+                            if (response.status >= 400) {
+                                this.error.text = "Something happened"
+                            }
+                            if (response.status >= 500) {
+                                this.error.text = "Could not connect to amane.dev"
+                                this.error.image =
+                                    "https://img.icons8.com/external-flatart-icons-flat-flatarticons/64/000000/external-error-user-interface-flatart-icons-flat-flatarticons-1.png"
+                            }
+                            //
+                            return;
+                        }
+
+                        // Process response data
+                        const data = await response.json();
+                        this.debugLog("<< d", data);
+
+                        if (data) {
+                            localStorage.appData = null;
+                            if (data['error']) {
+                                this.error.apiError = true;
+                                this.error.text = data['message'] ?? "données non valides";
+                                return;
+                            }
+                            if (!data['questionaire'] || !data['settings']) {
+                                this.error.apiError = true;
+                                this.error.text = "données non valides"
+                                return;
+                            }
+
+                            this.questionaire = data['questionaire'];
+                            this.settings = data['settings'];
+                            // cache questionaire and settings
+                            var appData = JSON.stringify(data);
+                            localStorage.appData = appData;
+
+                            this.debugLog("<< ap");
+                            this.debugLog(this.settings);
+                            // Init input values
+                            this.setupInput(this.questionaire);
+                        }
+                        this.isLoading = false;
+                    } catch (er) {
+                        this.debugLog("xx er init app", er)
+                        this.error.apiError = true;
+                    }
+                },
+                onProjectNameUpdated(evt, val) {
+                    this.isFormDataValid = true;
+                    this.debugLog(">> onProjectNameUpdated", this.formData.projectName);
+                    if (this.formData.projectName.length < 5) {
+                        this.isFormDataValid = false;
+                    }
+                },
+                deleteEstimation(projectName) {
+                    this.debugLog(">> deleteEstimation", this.estimations.length);
+                    this.debugLog(">> deleteEstimation", projectName);
+                    var index = this.estimations.find(e => e.projectName == projectName)
+                    if (index === -1) return;
+                    this.estimations.splice(index);
+                    localStorage.estimations = null;
+                    localStorage.estimations = JSON.stringify(this.estimations);
+                    this.debugLog(">> deleteEstimation", this.estimations.length);
+                    this.selectedEstimation = null;
+                    this.setupInput(this.questionaire);
+                    this.updateTotal();
+                },
+                saveQuote() {
+                    this.debugLog(">> saveQuote");
+
+                    if (!this.display.projectNameInput) {
+                        this.display.projectNameInput = true;
+                        this.isFormDataValid = false;
+                        return;
+                    }
+                    if (!this.isFormDataValid) {
+                        return;
+                    }
+                    this.saveQuoteBtn.isLoading = true;
+                    this.saveQuoteBtn.text = "En cours";
+
+                    // Saving quote
+
+                    this.debugLog(">>input", this.input)
+                    var user = {
+                        email: null,
+                        name: null,
+                        phone: null,
+                    }
+                    var date = new Date().toISOString();
+                    var estimation = {
+                        user,
+                        projectName: this.formData.projectName,
+                        data: this.input,
+                        date,
+                    }
+                    this.debugLog("<<= input", this.input);
+                    this.debugLog("<<= estimation", estimation);
+
+
+                    // save estimation to local storage // n to api
+
+                    // get saved estimations
+                    var estimations = [];
+                    if (localStorage.estimations) {
+                        try {
+                            estimations.push(JSON.parse(localStorage.estimations));
+                            this.debugLog("<< saved estimations ", estimations);
+                        } catch (err) {
+                            this.debugLog("xx error parsing estimations", err);
+                            estimations = [];
+                        }
+                    }
+                    estimations.unshift(estimation);
+                    this.selectedEstimation = estimation;
+                    this.estimations = estimations;
+                    this.debugLog("<<= estimations", estimations);
+
+                    localStorage.estimations = JSON.stringify(estimations);
+                    this.debugLog("<<= estimations", localStorage.estimations);
+
+
+                    setTimeout(() => {
+                        this.saveQuoteBtn.isLoading = false;
+                        this.saveQuoteBtn.success = true;
+                        this.saveQuoteBtn.text = "Sauvegardé !";
+                    }, 3000);
+                },
+                setupInput(questionaire) {
+                    this.debugLog(">> setupInput", questionaire);
+                    if (questionaire) {
+                        questionaire.forEach(question => {
+                            // si checkbox
+                            // init question to empty
+                            this.input[question.name] = {};
+                            if (question.type == 'checkbox') {
+                                // pour chaque réponse
+                                question.answers.forEach(reponse => {
+                                    // initialiser la valeur réponse à false
+                                    this.input[question.name][reponse.value] = false;
+                                });
+                            } else {
+                                // init le nom de la question à null
+                                this.input[question.name] = null;
+                            }
+                        });
+                        //
+                        this.debugLog("<< i", this.input);
+                        // Save data to localstorage
+                        // var jsonInput = JSON.stringify(this.input);
+                        // localStorage.input = jsonInput;
+                    }
+                },
+                //
+                async updateTotal() {
+                    this.isTotalLoading = true;
+                    this.total.days.developer = 0;
+                    this.total.days.designer = 0;
+                    // ? ** Maagic */
+                    // ! Don't temper with the spell, Peter !
+                    if (this.questionaire) {
+                        if (this.input) {
+                            //
+                            Object.entries(this.input).forEach(([questionName, answerData]) => {
+                                //
+                                var $days = 0;
+                                // const answerData = this.input[questionName];
+                                // find question
+                                const question = this.questionaire.find(q => q.name ===
+                                    questionName);
+                                if (question) {
+                                    // get question type
+                                    if (question.type === "radio") {
+                                        // take answerData literally
+                                        // find the right answer
+                                        // don't calculate ui questions
+                                        if (questionName !== this.settings.ui_field_name) {
+                                            // we're gonna calculate designer days based on that
+                                            const answer = question.answers.find(a => a.value ===
+                                                answerData);
+                                            if (answer) {
+                                                // get the days
+                                                $days = parseInt(answer.content);
+                                            }
+                                        }
+                                    } else {
+                                        // type checkbox
+                                        // run each answer data
+                                        Object.entries(answerData).forEach(([answerValue,
+                                            isChecked
+                                        ]) => {
+                                            // find the answer
+                                            const answer = question.answers.find(a => a
+                                                .value ===
+                                                answerValue);
+                                            if (answer) {
+                                                // update days if value is true
+                                                if (isChecked) {
+                                                    $days += parseInt(answer.content);
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                                // update total
+                                // TODO : calc price too
+                                this.total.days.developer += parseInt($days);
+                            });
+                            //
+                            // find ui design percentage
+                            var ui_field = this.settings.ui_field_name;
+                            var ui_value = this.input[ui_field];
+
+
+                            if (ui_value) {
+                                var percentage = 0;
+
+                                try {
+                                    // find question
+                                    const question = this.questionaire.find(q => q.name === ui_field);
+                                    // find answer
+                                    const answer = question.answers.find(a => a.value === ui_value);
+                                    // find percentage value
+                                    const ratio = answer.content;
+
+                                    percentage = parseInt(ratio) / 100;
+                                    this.debugLog(">> ratio percent", ratio, percentage);
+
+                                } catch (conversionError) {
+                                    // could not convert
+                                    this.debugLog("xxx conversionError");
+
+                                }
+
+                                var designer_days = this.total.days.developer * percentage;
+
+                                // calculate designer days from developer days
+                                this.total.days.designer = Math.floor(designer_days);
+                            }
+                            // update total days
+                            // this.total.days.total = this.total.days.designer + this.total.days.developer;
+                            // // calculate final price
+                            // this.total.price = this.total.days.designer * this.settings.designer_day + this.total.days.developer * this.settings.developer_day;
+                            // this.total.currency = this.settings.currency;
+
+                            /** Updates */
+                            this.total.days.total = this.total.days.designer + this.total.days.developer;
+                            // calculate final price
+
+                            this.debugLog("rates: ", this.designer_day, this.developer_day);
+
+                            this.total.price = this.total.days.designer * this.designer_day + this.total
+                                .days
+                                .developer * this.developer_day;
+                            this.total.currency = this.currency;
+                        }
+                    }
+                    // ? ** End Maagic : */
+                    setTimeout(() => {
+                        this.isTotalLoading = false;
+                    }, 300);
+
+
+                    this.debugLog("<<< total", this.total.days.designer, this.total.days.developer, this
+                        .total
+                        .days.total, this.total.price);
+
+                    return this.total;
+                },
+            }
+        })
+    </script>
+
+    <style>
+        .transition {
+            transition: all .2s ease-out;
+        }
+
+        input.hidden_input {
+            display: none;
+        }
+
+        input.hidden_input:checked+label .input_image {
+            background: #6699cc !important;
+        }
+    
+        label.selected .input_image {
+            background: #79b7f5b9;
+        }
+
+        input.hidden_input:checked+label .input_text {
+            color: #6699cc !important;
+            font-weight: 700;
+            background: #efefef;
+        }
+        
+        label.selected .input_text {
+            color: #79b7f5b9;
+            font-weight: 700;
+            background: #efefef;
+        }
+
+        .projectNameInputLabel {
+            position: absolute;
+            top: 50%;
+            left: 5px;
+            transform: translateY(-50%);
+
+        }
+
+        .input:focus {
+            border: none;
+            border-bottom: 1px solid blue;
+            border-radius: 0;
+        }
+
+        .input:focus+.projectNameInputLabel,
+        .input.active+.projectNameInputLabel {
+            top: 0;
+            background: transparent;
+        }
+    </style>
+
+</body>
+
+</html>
